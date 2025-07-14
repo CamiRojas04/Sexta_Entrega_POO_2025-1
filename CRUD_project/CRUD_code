@@ -2,29 +2,34 @@ import tkinter as tk
 from tkinter import ttk, messagebox, scrolledtext
 import os
 
+
 # Constante para el nombre del archivo de datos
 NOMBRE_ARCHIVO_DATOS = "Formulario.txt"
 
+
 class AplicacionCrud(tk.Tk):
-    """
-    Clase principal de la aplicación con una interfaz gráfica.
-    """
+
+
     def __init__(self):
         super().__init__()
+
 
         # --- Configuración de la ventana principal ---
         self.title("Formulario CRUD Profesional")
         self.geometry("550x500")
-        self.minsize(500, 450) # Tamaño mínimo para que no se deforme
+        self.minsize(500, 450) 
+
 
         # --- Aplicar el estilo personalizado ---
         self._configurar_estilos()
         self._crear_componentes()
 
+
     def _configurar_estilos(self):
         """Define una paleta de colores sobria y la aplica a los widgets ttk."""
         self.style = ttk.Style(self)
         self.style.theme_use('clam') 
+
 
         # --- Paleta de Colores ---
         COLOR_FONDO = "#2E3B4E"
@@ -33,8 +38,10 @@ class AplicacionCrud(tk.Tk):
         COLOR_AZUL_ACENTO = "#007BFF"
         COLOR_AZUL_HOVER = "#0056b3"
 
+
         # --- Configuración de la ventana principal ---
         self.configure(background=COLOR_FONDO)
+
 
         # --- Estilos de los widgets ---
         self.style.configure('TFrame', background=COLOR_FONDO)
@@ -45,53 +52,59 @@ class AplicacionCrud(tk.Tk):
             foreground=[('active', COLOR_TEXTO)]
         )
         self.style.configure('TEntry', fieldbackground=COLOR_FONDO_WIDGET, foreground=COLOR_TEXTO, borderwidth=1, insertcolor=COLOR_TEXTO)
-        
-        # Estilo para el área de texto (que no es un widget ttk directo)
+
+
+        # Estilo para el área de texto 
         self.option_add('*TCombobox*Listbox.background', COLOR_FONDO_WIDGET)
         self.option_add('*TCombobox*Listbox.foreground', COLOR_TEXTO)
         self.option_add('*TCombobox*Listbox.selectBackground', COLOR_AZUL_ACENTO)
 
+
     def _registrar_mensaje(self, mensaje):
-        """Añade texto al área de resultados."""
         self.area_resultados.config(state='normal')
         self.area_resultados.insert(tk.END, mensaje + "\n")
         self.area_resultados.config(state='disabled')
         self.area_resultados.see(tk.END)
 
+
     def _crear_componentes(self):
-        """
-        Crea y organiza los componentes visuales usando un layout de grid y frames.
-        """
         # Frame principal para contener todo y añadir un padding general
         main_frame = ttk.Frame(self, padding="10 10 10 10")
         main_frame.pack(fill=tk.BOTH, expand=True)
 
+
         # --- Frame para los campos de entrada ---
         input_frame = ttk.Frame(main_frame, padding="10")
         input_frame.pack(fill=tk.X, pady=(0, 10))
-        input_frame.columnconfigure(1, weight=1) # Columna de campos se expande
+        input_frame.columnconfigure(1, weight=1) 
+
 
         # Widgets de entrada
         ttk.Label(input_frame, text="Nombre:").grid(row=0, column=0, sticky="w", padx=5, pady=5)
         self.campo_nombre = ttk.Entry(input_frame, width=40)
         self.campo_nombre.grid(row=0, column=1, sticky="ew", padx=5, pady=5)
 
+
         ttk.Label(input_frame, text="Numero:").grid(row=1, column=0, sticky="w", padx=5, pady=5)
         self.campo_numero = ttk.Entry(input_frame, width=40)
         self.campo_numero.grid(row=1, column=1, sticky="ew", padx=5, pady=5)
+
 
         ttk.Label(input_frame, text="Nuevo nombre:").grid(row=2, column=0, sticky="w", padx=5, pady=5)
         self.campo_nuevo_nombre = ttk.Entry(input_frame, width=40)
         self.campo_nuevo_nombre.grid(row=2, column=1, sticky="ew", padx=5, pady=5)
 
+
         ttk.Label(input_frame, text="Nuevo numero:").grid(row=3, column=0, sticky="w", padx=5, pady=5)
         self.campo_nuevo_numero = ttk.Entry(input_frame, width=40)
         self.campo_nuevo_numero.grid(row=3, column=1, sticky="ew", padx=5, pady=5)
-        
+
+
         # --- Frame para los botones ---
         button_frame = ttk.Frame(main_frame)
         button_frame.pack(fill=tk.X, pady=10)
-        button_frame.columnconfigure((0, 1, 2, 3), weight=1) # Botones se distribuyen
+        button_frame.columnconfigure((0, 1, 2, 3), weight=1) 
+
 
         # Botones de acción
         ttk.Button(button_frame, text="Crear", command=self._crear_registro).grid(row=0, column=0, sticky="ew", padx=5)
@@ -99,33 +112,38 @@ class AplicacionCrud(tk.Tk):
         ttk.Button(button_frame, text="Actualizar", command=self._actualizar_registro).grid(row=0, column=2, sticky="ew", padx=5)
         ttk.Button(button_frame, text="Eliminar", command=self._eliminar_registro).grid(row=0, column=3, sticky="ew", padx=5)
 
+
         # --- Área de resultados ---
         resultados_frame = ttk.Frame(main_frame)
         resultados_frame.pack(fill=tk.BOTH, expand=True)
+
 
         self.area_resultados = scrolledtext.ScrolledText(resultados_frame, wrap=tk.WORD, height=10)
         self.area_resultados.pack(fill=tk.BOTH, expand=True)
         # Estilo para el área de resultados
         self.area_resultados.config(
-            background="#1C2833", 
-            foreground="#D5D8DC", 
+            background="#1C2833",
+            foreground="#D5D8DC",
             insertbackground="#FFFFFF",
             font=('Consolas', 10),
             state='disabled'
         )
- 
+
 
     def _crear_registro(self):
         nombre = self.campo_nombre.get()
         numero = self.campo_numero.get()
 
+
         if not nombre or not numero:
             messagebox.showerror("Error", "Los campos 'Nombre' y 'Numero' son obligatorios.")
             return
 
+
         if not os.path.exists(NOMBRE_ARCHIVO_DATOS):
             open(NOMBRE_ARCHIVO_DATOS, 'w').close()
-        
+
+
         encontrado = False
         with open(NOMBRE_ARCHIVO_DATOS, 'r') as archivo:
             for linea in archivo:
@@ -134,7 +152,8 @@ class AplicacionCrud(tk.Tk):
                     if nombre_existente == nombre or numero_existente == numero:
                         encontrado = True
                         break
-        
+
+
         if encontrado:
             self._registrar_mensaje("--- ! --- Error --- ! ---\nEl nombre o el numero ya existe.\n-------------------------")
         else:
@@ -142,10 +161,12 @@ class AplicacionCrud(tk.Tk):
                 archivo.write(f"{nombre}!{numero}\n")
             self._registrar_mensaje("--- ✓ --- Éxito --- ✓ ---\nUsuario añadido correctamente.\n--------------------------")
 
+
     def _leer_registros(self):
         self.area_resultados.config(state='normal')
         self.area_resultados.delete('1.0', tk.END)
-        
+
+
         self._registrar_mensaje("--- Registros Actuales ---")
         try:
             with open(NOMBRE_ARCHIVO_DATOS, 'r') as archivo:
@@ -159,18 +180,22 @@ class AplicacionCrud(tk.Tk):
                             self._registrar_mensaje(f"  Nombre: {nombre}\n  Numero: {numero}\n")
         except FileNotFoundError:
             self._registrar_mensaje("No se ha creado ningún registro todavía.")
-        
+
+
         self._registrar_mensaje("--------------------------")
         self.area_resultados.config(state='disabled')
-        
+
+
     def _actualizar_registro(self):
         nombre_original = self.campo_nombre.get()
         nombre_nuevo = self.campo_nuevo_nombre.get()
         numero_nuevo = self.campo_nuevo_numero.get()
 
+
         if not nombre_original or not nombre_nuevo or not numero_nuevo:
             messagebox.showerror("Error", "Todos los campos deben estar llenos para actualizar.")
             return
+
 
         try:
             encontrado = False
@@ -184,7 +209,8 @@ class AplicacionCrud(tk.Tk):
                             encontrado = True
                         else:
                             f_out.write(linea)
-            
+
+
             if encontrado:
                 os.replace(archivo_temporal, NOMBRE_ARCHIVO_DATOS)
                 self._registrar_mensaje("--- ✓ --- Éxito --- ✓ ---\nUsuario actualizado.\n--------------------------")
@@ -192,15 +218,19 @@ class AplicacionCrud(tk.Tk):
                 os.remove(archivo_temporal)
                 self._registrar_mensaje("--- ! --- Error --- ! ---\nEl usuario ingresado no existe.\n-------------------------")
 
+
         except FileNotFoundError:
             self._registrar_mensaje("--- ! --- Error --- ! ---\nEl archivo de datos no existe.\n-------------------------")
-            
+
+
     def _eliminar_registro(self):
         nombre_a_eliminar = self.campo_nombre.get()
+
 
         if not nombre_a_eliminar:
             messagebox.showerror("Error", "El campo 'Nombre' es necesario para eliminar.")
             return
+
 
         try:
             encontrado = False
@@ -213,7 +243,8 @@ class AplicacionCrud(tk.Tk):
                             encontrado = True
                             continue
                         f_out.write(linea)
-            
+
+
             if encontrado:
                 os.replace(archivo_temporal, NOMBRE_ARCHIVO_DATOS)
                 self._registrar_mensaje("--- ✓ --- Éxito --- ✓ ---\nUsuario eliminado.\n--------------------------")
@@ -221,8 +252,11 @@ class AplicacionCrud(tk.Tk):
                 os.remove(archivo_temporal)
                 self._registrar_mensaje("--- ! --- Error --- ! ---\nEl usuario ingresado no existe.\n-------------------------")
 
+
         except FileNotFoundError:
             self._registrar_mensaje("--- ! --- Error --- ! ---\nEl archivo de datos no existe.\n-------------------------")
+
+
 
 
 if __name__ == "__main__":
